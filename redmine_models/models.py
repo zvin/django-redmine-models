@@ -140,9 +140,41 @@ class CustomFieldEnumeration(models.Model):
 
 
 class CustomField(models.Model):
-    type = models.CharField(max_length=30)
+    type = models.CharField(
+        max_length=30,
+        choices=(
+            ("IssueCustomField", "Issue Custom Field"),
+            ("TimeEntryCustomField", "Time Entry Custom Field"),
+            ("ProjectCustomField", "Project Custom Field"),
+            ("VersionCustomField", "Version Custom Field"),
+            ("DocumentCustomField", "Document Custom Field"),
+            ("UserCustomField", "User Custom Field"),
+            ("GroupCustomField", "Group Custom Field"),
+            (
+                "TimeEntryActivityCustomField",
+                "Time Entry Activity Custom Field"
+            ),
+            ("IssuePriorityCustomField", "Issue Priority Custom Field"),
+            ("DocumentCategoryCustomField", "Document Category Custom Field"),
+        ),
+    )
     name = models.CharField(max_length=30)
-    field_format = models.CharField(max_length=30)
+    field_format = models.CharField(
+        max_length=30,
+        choices=(
+            ("bool", "Boolean"),
+            ("date", "Date"),
+            ("int", "Integer"),
+            ("link", "Link"),
+            ("list", "List"),
+            ("enumeration", "Key/value list"),
+            ("float", "Float"),
+            ("string", "Text"),
+            ("text", "Long text"),
+            ("user", "User"),
+            ("version", "Version"),
+        ),
+    )
     possible_values = models.TextField(blank=True, null=True)
     regexp = models.CharField(max_length=1024, blank=True, null=True)
     min_length = models.IntegerField(blank=True, null=True)
@@ -243,7 +275,16 @@ class Enumeration(models.Model):
     name = models.CharField(max_length=30)
     position = models.IntegerField(blank=True, null=True)
     is_default = models.BooleanField()
-    type = models.CharField(max_length=1024, blank=True, null=True)
+    type = models.CharField(
+        blank=True,
+        null=True,
+        max_length=17,
+        choices=(
+            ("DocumentCategory", "Document Category"),
+            ("IssuePriority", "Issue Priority"),
+            ("TimeEntryActivity", "Time Entry Activity"),
+        )
+    )
     active = models.BooleanField()
     project = models.ForeignKey("Project", blank=True, null=True)
     parent = models.ForeignKey("Enumeration", blank=True, null=True)
