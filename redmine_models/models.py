@@ -91,7 +91,7 @@ class ChangesetParent(models.Model):
 
 class Changeset(models.Model):
     repository = models.ForeignKey("Repository")
-    revision = models.CharField(max_length=1024)
+    revision = models.CharField(max_length=255)
     committer = models.CharField(max_length=1024, blank=True, null=True)
     committed_on = models.DateTimeField()
     comments = models.TextField(blank=True, null=True)
