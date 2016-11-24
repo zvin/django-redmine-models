@@ -831,7 +831,7 @@ class Wiki(models.Model):
 
 
 class Workflow(models.Model):
-    tracker = models.ForeignKey(Enumeration)
+    tracker = models.ForeignKey(Tracker)
     old_status = models.ForeignKey(
         IssueStatus,
         related_name="workflows_where_old",
