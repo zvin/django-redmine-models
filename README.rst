@@ -18,6 +18,12 @@ and define (or add) the database router::
 
     DATABASE_ROUTERS = ["redmine_models.routers.DatabaseRouter"]
 
+By default, it is supposed that an external redmine service is being accessed,
+and thus the models are unmanaged.  If that's not desired, e.g. for testing you
+want the test tables to be created automatically, use the following setting::
+
+    REDMINE_MODELS_MANAGED = True
+
 Then use the models::
 
     from redmine_models.models import Project
