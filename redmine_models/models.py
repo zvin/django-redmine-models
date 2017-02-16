@@ -3,6 +3,9 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.conf import settings
+
+redmine_models_managed = getattr(settings, 'REDMINE_MODELS_MANAGED', False)
 
 
 class Attachment(models.Model):
@@ -20,7 +23,7 @@ class Attachment(models.Model):
     disk_directory = models.CharField(max_length=1024, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "attachments"
 
 
@@ -42,7 +45,7 @@ class AuthSource(models.Model):
     timeout = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "auth_sources"
 
 
@@ -62,7 +65,7 @@ class Board(models.Model):
     parent = models.ForeignKey("Board", blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "boards"
 
 
@@ -76,7 +79,7 @@ class Change(models.Model):
     branch = models.CharField(max_length=1024, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "changes"
 
 
@@ -85,7 +88,7 @@ class ChangesetParent(models.Model):
     parent = models.IntegerField("Changeset")
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "changeset_parents"
 
 
@@ -100,7 +103,7 @@ class Changeset(models.Model):
     user = models.ForeignKey("User", blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "changesets"
         unique_together = (("repository", "revision"),)
 
@@ -110,7 +113,7 @@ class ChangesetsIssue(models.Model):
     issue = models.ForeignKey("Issue")
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "changesets_issues"
         unique_together = (("changeset", "issue"),)
 
@@ -124,7 +127,7 @@ class Comment(models.Model):
     updated_on = models.DateTimeField()
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "comments"
 
 
@@ -135,7 +138,7 @@ class CustomFieldEnumeration(models.Model):
     position = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "custom_field_enumerations"
 
 
@@ -192,7 +195,7 @@ class CustomField(models.Model):
     description = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "custom_fields"
 
 
@@ -201,7 +204,7 @@ class CustomFieldProject(models.Model):
     project = models.ForeignKey("Project")
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "custom_fields_projects"
         unique_together = (("custom_field", "project"),)
 
@@ -211,7 +214,7 @@ class CustomFieldRole(models.Model):
     role = models.ForeignKey("Role")
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "custom_fields_roles"
         unique_together = (("custom_field", "role"),)
 
@@ -221,7 +224,7 @@ class CustomFieldTracker(models.Model):
     tracker = models.ForeignKey("Tracker")
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "custom_fields_trackers"
         unique_together = (("custom_field", "tracker"),)
 
@@ -233,7 +236,7 @@ class CustomValue(models.Model):
     value = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "custom_values"
 
 
@@ -245,7 +248,7 @@ class Document(models.Model):
     created_on = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "documents"
 
 
@@ -258,7 +261,7 @@ class EmailAddress(models.Model):
     updated_on = models.DateTimeField()
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "email_addresses"
 
 
@@ -267,7 +270,7 @@ class EnabledModule(models.Model):
     name = models.CharField(max_length=1024)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "enabled_modules"
 
 
@@ -291,7 +294,7 @@ class Enumeration(models.Model):
     position_name = models.CharField(max_length=30, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "enumerations"
 
 
@@ -300,7 +303,7 @@ class GroupUser(models.Model):
     user = models.ForeignKey("User", related_name="groups")
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "groups_users"
         unique_together = (("group", "user"),)
 
@@ -312,7 +315,7 @@ class ImportItem(models.Model):
     message = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "import_items"
 
 
@@ -327,7 +330,7 @@ class Import(models.Model):
     updated_at = models.DateTimeField()
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "imports"
 
 
@@ -337,7 +340,7 @@ class IssueCategory(models.Model):
     assigned_to = models.ForeignKey("User", blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "issue_categories"
 
 
@@ -348,7 +351,7 @@ class IssueRelation(models.Model):
     delay = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "issue_relations"
         unique_together = (("issue_from", "issue_to"),)
 
@@ -360,7 +363,7 @@ class IssueStatus(models.Model):
     default_done_ratio = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "issue_statuses"
 
 
@@ -412,7 +415,7 @@ class Issue(models.Model):
     closed_on = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "issues"
 
 
@@ -424,7 +427,7 @@ class JournalDetail(models.Model):
     value = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "journal_details"
 
 
@@ -437,7 +440,7 @@ class Journal(models.Model):
     private_notes = models.BooleanField()
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "journals"
 
 
@@ -447,7 +450,7 @@ class MemberRole(models.Model):
     inherited_from = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "member_roles"
 
 
@@ -458,7 +461,7 @@ class Member(models.Model):
     mail_notification = models.BooleanField()
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "members"
         unique_together = (("user", "project"),)
 
@@ -482,7 +485,7 @@ class Message(models.Model):
     sticky = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "messages"
 
 
@@ -496,7 +499,7 @@ class News(models.Model):
     comments_count = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "news"
 
 
@@ -509,7 +512,7 @@ class OpenIdAuthenticationAssociation(models.Model):
     secret = models.BinaryField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "open_id_authentication_associations"
 
 
@@ -519,7 +522,7 @@ class OpenIdAuthenticationNonce(models.Model):
     salt = models.CharField(max_length=1024)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "open_id_authentication_nonces"
 
 
@@ -556,7 +559,7 @@ class Project(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "projects"
 
 
@@ -565,7 +568,7 @@ class ProjectTracker(models.Model):
     tracker = models.ForeignKey("Tracker")
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "projects_trackers"
         unique_together = (("project", "tracker"),)
 
@@ -583,7 +586,7 @@ class Query(models.Model):
     options = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "queries"
 
 
@@ -592,7 +595,7 @@ class QueryRole(models.Model):
     role = models.ForeignKey("Role")
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "queries_roles"
         unique_together = (("query", "role"),)
 
@@ -612,7 +615,7 @@ class Repository(models.Model):
     created_on = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "repositories"
 
 
@@ -628,7 +631,7 @@ class Role(models.Model):
     all_roles_managed = models.BooleanField()
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "roles"
 
 
@@ -637,7 +640,7 @@ class RoleManagedRole(models.Model):
     managed_role = models.ForeignKey(Role, related_name="managed_by")
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "roles_managed_roles"
         unique_together = (("role", "managed_role"),)
 
@@ -646,7 +649,7 @@ class SchemaMigration(models.Model):
     version = models.CharField(unique=True, max_length=255)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "schema_migrations"
 
 
@@ -656,7 +659,7 @@ class Setting(models.Model):
     updated_on = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "settings"
 
 
@@ -675,7 +678,7 @@ class TimeEntry(models.Model):
     updated_on = models.DateTimeField()
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "time_entries"
 
 
@@ -687,7 +690,7 @@ class Token(models.Model):
     updated_on = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "tokens"
 
 
@@ -700,7 +703,7 @@ class Tracker(models.Model):
     default_status = models.ForeignKey(IssueStatus, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "trackers"
 
 
@@ -711,7 +714,7 @@ class UserPreference(models.Model):
     time_zone = models.CharField(max_length=1024, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "user_preferences"
 
 
@@ -735,7 +738,7 @@ class User(models.Model):
     passwd_changed_on = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "users"
 
 
@@ -751,7 +754,7 @@ class Version(models.Model):
     sharing = models.CharField(max_length=1024)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "versions"
 
 
@@ -761,7 +764,7 @@ class Watcher(models.Model):
     user = models.ForeignKey(User, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "watchers"
 
 
@@ -776,7 +779,7 @@ class WikiContentVersion(models.Model):
     version = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "wiki_content_versions"
 
 
@@ -789,7 +792,7 @@ class WikiContent(models.Model):
     version = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "wiki_contents"
 
 
@@ -801,7 +804,7 @@ class WikiPage(models.Model):
     parent = models.ForeignKey("WikiPage", blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "wiki_pages"
 
 
@@ -816,7 +819,7 @@ class WikiRedirect(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "wiki_redirects"
 
 
@@ -826,7 +829,7 @@ class Wiki(models.Model):
     status = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "wikis"
 
 
@@ -848,5 +851,5 @@ class Workflow(models.Model):
     rule = models.CharField(max_length=30, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = redmine_models_managed
         db_table = "workflows"
