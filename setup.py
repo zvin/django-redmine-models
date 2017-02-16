@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-redmine-models',
-    version='0.2',
+    version='0.3',
     url='https://github.com/zvin/django-redmine-models',
     description=(
         'Django models for the Redmine database.'
