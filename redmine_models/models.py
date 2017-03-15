@@ -527,14 +527,14 @@ class OpenIdAuthenticationNonce(models.Model):
 
 
 class Project(models.Model):
-    name = models.CharField(max_length=1024)
+    name = models.CharField(max_length=1024, blank=False)
     description = models.TextField(blank=True, null=True)
     homepage = models.CharField(max_length=1024, blank=True, null=True)
     is_public = models.BooleanField()
     parent = models.ForeignKey("Project", blank=True, null=True)
     created_on = models.DateTimeField(blank=True, null=True)
     updated_on = models.DateTimeField(blank=True, null=True)
-    identifier = models.CharField(max_length=1024, blank=True, null=True)
+    identifier = models.CharField(max_length=1024, blank=False)
     status = models.IntegerField()
     lft = models.ForeignKey(
         "Project",
