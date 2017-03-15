@@ -17,7 +17,7 @@ class Attachment(models.Model):
     content_type = models.CharField(max_length=1024, blank=True, null=True)
     digest = models.CharField(max_length=40)
     downloads = models.IntegerField()
-    autho = models.ForeignKey("User")
+    author = models.ForeignKey("User")
     created_on = models.DateTimeField(blank=True, null=True)
     description = models.CharField(max_length=1024, blank=True, null=True)
     disk_directory = models.CharField(max_length=1024, blank=True, null=True)
