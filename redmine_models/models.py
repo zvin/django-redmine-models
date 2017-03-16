@@ -384,11 +384,11 @@ class Issue(models.Model):
     priority = models.ForeignKey("Enumeration")
     fixed_version = models.ForeignKey("Version", blank=True, null=True)
     author = models.ForeignKey("User")
-    lock_version = models.IntegerField()
+    lock_version = models.IntegerField(default=0)
     created_on = models.DateTimeField(blank=True, null=True)
     updated_on = models.DateTimeField(blank=True, null=True)
     start_date = models.DateField(blank=True, null=True)
-    done_ratio = models.IntegerField()
+    done_ratio = models.IntegerField(default=0)
     estimated_hours = models.FloatField(blank=True, null=True)
     parent = models.ForeignKey(
         "Issue",
@@ -411,7 +411,7 @@ class Issue(models.Model):
         blank=True,
         null=True,
     )
-    is_private = models.BooleanField()
+    is_private = models.BooleanField(default=False)
     closed_on = models.DateTimeField(blank=True, null=True)
 
     class Meta:
