@@ -13,10 +13,10 @@ class Attachment(models.Model):
     container_type = models.CharField(max_length=30, blank=True, null=True)
     filename = models.CharField(max_length=1024)
     disk_filename = models.CharField(max_length=1024)
-    filesize = models.BigIntegerField()
+    filesize = models.BigIntegerField(default=0)
     content_type = models.CharField(max_length=1024, blank=True, null=True)
     digest = models.CharField(max_length=40)
-    downloads = models.IntegerField()
+    downloads = models.IntegerField(default=0)
     author = models.ForeignKey("User")
     created_on = models.DateTimeField(blank=True, null=True)
     description = models.CharField(max_length=1024, blank=True, null=True)
@@ -437,7 +437,7 @@ class Journal(models.Model):
     user = models.ForeignKey("User")
     notes = models.TextField(blank=True, null=True)
     created_on = models.DateTimeField()
-    private_notes = models.BooleanField()
+    private_notes = models.BooleanField(default=False)
 
     class Meta:
         managed = redmine_models_managed
