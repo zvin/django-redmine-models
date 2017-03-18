@@ -13,11 +13,11 @@ class Attachment(models.Model):
     container_type = models.CharField(max_length=30, blank=True, null=True)
     filename = models.CharField(max_length=1024)
     disk_filename = models.CharField(max_length=1024)
-    filesize = models.BigIntegerField()
+    filesize = models.BigIntegerField(default=0)
     content_type = models.CharField(max_length=1024, blank=True, null=True)
     digest = models.CharField(max_length=40)
-    downloads = models.IntegerField()
-    autho = models.ForeignKey("User")
+    downloads = models.IntegerField(default=0)
+    author = models.ForeignKey("User")
     created_on = models.DateTimeField(blank=True, null=True)
     description = models.CharField(max_length=1024, blank=True, null=True)
     disk_directory = models.CharField(max_length=1024, blank=True, null=True)
@@ -384,11 +384,11 @@ class Issue(models.Model):
     priority = models.ForeignKey("Enumeration")
     fixed_version = models.ForeignKey("Version", blank=True, null=True)
     author = models.ForeignKey("User")
-    lock_version = models.IntegerField()
+    lock_version = models.IntegerField(default=0)
     created_on = models.DateTimeField(blank=True, null=True)
     updated_on = models.DateTimeField(blank=True, null=True)
     start_date = models.DateField(blank=True, null=True)
-    done_ratio = models.IntegerField()
+    done_ratio = models.IntegerField(default=0)
     estimated_hours = models.FloatField(blank=True, null=True)
     parent = models.ForeignKey(
         "Issue",
@@ -411,7 +411,7 @@ class Issue(models.Model):
         blank=True,
         null=True,
     )
-    is_private = models.BooleanField()
+    is_private = models.BooleanField(default=False)
     closed_on = models.DateTimeField(blank=True, null=True)
 
     class Meta:
@@ -437,7 +437,7 @@ class Journal(models.Model):
     user = models.ForeignKey("User")
     notes = models.TextField(blank=True, null=True)
     created_on = models.DateTimeField()
-    private_notes = models.BooleanField()
+    private_notes = models.BooleanField(default=False)
 
     class Meta:
         managed = redmine_models_managed
@@ -527,14 +527,14 @@ class OpenIdAuthenticationNonce(models.Model):
 
 
 class Project(models.Model):
-    name = models.CharField(max_length=1024)
+    name = models.CharField(max_length=1024, blank=False)
     description = models.TextField(blank=True, null=True)
     homepage = models.CharField(max_length=1024, blank=True, null=True)
     is_public = models.BooleanField()
     parent = models.ForeignKey("Project", blank=True, null=True)
     created_on = models.DateTimeField(blank=True, null=True)
     updated_on = models.DateTimeField(blank=True, null=True)
-    identifier = models.CharField(max_length=1024, blank=True, null=True)
+    identifier = models.CharField(max_length=1024, blank=False)
     status = models.IntegerField()
     lft = models.ForeignKey(
         "Project",
