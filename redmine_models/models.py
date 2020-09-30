@@ -17,7 +17,7 @@ class Attachment(models.Model):
     content_type = models.CharField(max_length=1024, blank=True, null=True)
     digest = models.CharField(max_length=40)
     downloads = models.IntegerField()
-    autho = models.ForeignKey("User")
+    author = models.ForeignKey("User", on_delete=models.RESTRICT)
     created_on = models.DateTimeField(blank=True, null=True)
     description = models.CharField(max_length=1024, blank=True, null=True)
     disk_directory = models.CharField(max_length=1024, blank=True, null=True)
@@ -50,7 +50,7 @@ class AuthSource(models.Model):
 
 
 class Board(models.Model):
-    project = models.ForeignKey("Project")
+    project = models.ForeignKey("Project", on_delete=models.RESTRICT)
     name = models.CharField(max_length=1024)
     description = models.CharField(max_length=1024, blank=True, null=True)
     position = models.IntegerField(blank=True, null=True)
@@ -61,8 +61,9 @@ class Board(models.Model):
         related_name="board_where_last",
         blank=True,
         null=True,
+        on_delete=models.RESTRICT,
     )
-    parent = models.ForeignKey("Board", blank=True, null=True)
+    parent = models.ForeignKey("Board", blank=True, null=True, on_delete=models.RESTRICT)
 
     class Meta:
         managed = redmine_models_managed
@@ -70,7 +71,7 @@ class Board(models.Model):
 
 
 class Change(models.Model):
-    changeset = models.ForeignKey("Changeset")
+    changeset = models.ForeignKey("Changeset", on_delete=models.RESTRICT)
     action = models.CharField(max_length=1)
     path = models.TextField()
     from_path = models.TextField(blank=True, null=True)
@@ -84,7 +85,7 @@ class Change(models.Model):
 
 
 class ChangesetParent(models.Model):
-    changeset = models.ForeignKey("Changeset")
+    changeset = models.ForeignKey("Changeset", on_delete=models.RESTRICT)
     parent = models.IntegerField("Changeset")
 
     class Meta:
@@ -93,14 +94,14 @@ class ChangesetParent(models.Model):
 
 
 class Changeset(models.Model):
-    repository = models.ForeignKey("Repository")
+    repository = models.ForeignKey("Repository", on_delete=models.RESTRICT)
     revision = models.CharField(max_length=255)
     committer = models.CharField(max_length=1024, blank=True, null=True)
     committed_on = models.DateTimeField()
     comments = models.TextField(blank=True, null=True)
     commit_date = models.DateField(blank=True, null=True)
     scmid = models.CharField(max_length=1024, blank=True, null=True)
-    user = models.ForeignKey("User", blank=True, null=True)
+    user = models.ForeignKey("User", blank=True, null=True, on_delete=models.RESTRICT)
 
     class Meta:
         managed = redmine_models_managed
@@ -109,8 +110,8 @@ class Changeset(models.Model):
 
 
 class ChangesetsIssue(models.Model):
-    changeset = models.ForeignKey(Changeset)
-    issue = models.ForeignKey("Issue")
+    changeset = models.ForeignKey(Changeset, on_delete=models.RESTRICT)
+    issue = models.ForeignKey("Issue", on_delete=models.RESTRICT)
 
     class Meta:
         managed = redmine_models_managed
@@ -121,8 +122,8 @@ class ChangesetsIssue(models.Model):
 class Comment(models.Model):
     commented_type = models.CharField(max_length=30)
     commented_id = models.IntegerField()
-    author = models.ForeignKey("User")
-    comments = models.TextField(blank=True, null=True)
+    author = models.ForeignKey("User", on_delete=models.RESTRICT)
+    content = models.TextField(blank=True, null=True)
     created_on = models.DateTimeField()
     updated_on = models.DateTimeField()
 
@@ -132,7 +133,7 @@ class Comment(models.Model):
 
 
 class CustomFieldEnumeration(models.Model):
-    custom_field = models.ForeignKey("CustomField")
+    custom_field = models.ForeignKey("CustomField", on_delete=models.RESTRICT)
     name = models.CharField(max_length=1024)
     active = models.BooleanField()
     position = models.IntegerField()
@@ -186,11 +187,11 @@ class CustomField(models.Model):
     is_for_all = models.BooleanField()
     is_filter = models.BooleanField()
     position = models.IntegerField(blank=True, null=True)
-    searchable = models.NullBooleanField()
+    searchable = models.BooleanField(null=True, blank=True)
     default_value = models.TextField(blank=True, null=True)
-    editable = models.NullBooleanField()
+    editable = models.BooleanField(null=True, blank=True)
     visible = models.BooleanField()
-    multiple = models.NullBooleanField()
+    multiple = models.BooleanField(null=True, blank=True)
     format_store = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
 
@@ -200,8 +201,8 @@ class CustomField(models.Model):
 
 
 class CustomFieldProject(models.Model):
-    custom_field = models.ForeignKey(CustomField)
-    project = models.ForeignKey("Project")
+    custom_field = models.ForeignKey(CustomField, on_delete=models.RESTRICT)
+    project = models.ForeignKey("Project", on_delete=models.RESTRICT)
 
     class Meta:
         managed = redmine_models_managed
@@ -210,8 +211,8 @@ class CustomFieldProject(models.Model):
 
 
 class CustomFieldRole(models.Model):
-    custom_field = models.ForeignKey(CustomField)
-    role = models.ForeignKey("Role")
+    custom_field = models.ForeignKey(CustomField, on_delete=models.RESTRICT)
+    role = models.ForeignKey("Role", on_delete=models.RESTRICT)
 
     class Meta:
         managed = redmine_models_managed
@@ -220,8 +221,8 @@ class CustomFieldRole(models.Model):
 
 
 class CustomFieldTracker(models.Model):
-    custom_field = models.ForeignKey(CustomField)
-    tracker = models.ForeignKey("Tracker")
+    custom_field = models.ForeignKey(CustomField, on_delete=models.RESTRICT)
+    tracker = models.ForeignKey("Tracker", on_delete=models.RESTRICT)
 
     class Meta:
         managed = redmine_models_managed
@@ -232,7 +233,7 @@ class CustomFieldTracker(models.Model):
 class CustomValue(models.Model):
     customized_type = models.CharField(max_length=30)
     customized_id = models.IntegerField()
-    custom_field = models.ForeignKey(CustomField)
+    custom_field = models.ForeignKey(CustomField, on_delete=models.RESTRICT)
     value = models.TextField(blank=True, null=True)
 
     class Meta:
@@ -241,8 +242,8 @@ class CustomValue(models.Model):
 
 
 class Document(models.Model):
-    project = models.ForeignKey("Project")
-    category = models.ForeignKey("IssueCategory")
+    project = models.ForeignKey("Project", on_delete=models.RESTRICT)
+    category = models.ForeignKey("IssueCategory", on_delete=models.RESTRICT)
     title = models.CharField(max_length=1024)
     description = models.TextField(blank=True, null=True)
     created_on = models.DateTimeField(blank=True, null=True)
@@ -253,8 +254,8 @@ class Document(models.Model):
 
 
 class EmailAddress(models.Model):
-    user = models.ForeignKey("User")
-    address = models.CharField(max_length=1024)
+    user = models.ForeignKey("User", on_delete=models.RESTRICT)
+    address = models.CharField(max_length=1024, unique=True)
     is_default = models.BooleanField()
     notify = models.BooleanField()
     created_on = models.DateTimeField()
@@ -266,7 +267,7 @@ class EmailAddress(models.Model):
 
 
 class EnabledModule(models.Model):
-    project = models.ForeignKey("Project", blank=True, null=True)
+    project = models.ForeignKey("Project", blank=True, null=True, on_delete=models.RESTRICT)
     name = models.CharField(max_length=1024)
 
     class Meta:
@@ -289,8 +290,8 @@ class Enumeration(models.Model):
         )
     )
     active = models.BooleanField()
-    project = models.ForeignKey("Project", blank=True, null=True)
-    parent = models.ForeignKey("Enumeration", blank=True, null=True)
+    project = models.ForeignKey("Project", blank=True, null=True, on_delete=models.RESTRICT)
+    parent = models.ForeignKey("Enumeration", blank=True, null=True, on_delete=models.RESTRICT)
     position_name = models.CharField(max_length=30, blank=True, null=True)
 
     class Meta:
@@ -299,8 +300,8 @@ class Enumeration(models.Model):
 
 
 class GroupUser(models.Model):
-    group = models.ForeignKey("User", related_name="users")
-    user = models.ForeignKey("User", related_name="groups")
+    group = models.ForeignKey("User", related_name="users", on_delete=models.RESTRICT)
+    user = models.ForeignKey("User", related_name="groups", on_delete=models.RESTRICT)
 
     class Meta:
         managed = redmine_models_managed
@@ -309,7 +310,7 @@ class GroupUser(models.Model):
 
 
 class ImportItem(models.Model):
-    import_id = models.ForeignKey("Import")
+    import_id = models.ForeignKey("Import", on_delete=models.RESTRICT)
     position = models.IntegerField()
     obj_id = models.IntegerField(blank=True, null=True)
     message = models.TextField(blank=True, null=True)
@@ -321,7 +322,7 @@ class ImportItem(models.Model):
 
 class Import(models.Model):
     type = models.CharField(max_length=1024, blank=True, null=True)
-    user = models.ForeignKey("User")
+    user = models.ForeignKey("User", on_delete=models.RESTRICT)
     filename = models.CharField(max_length=1024, blank=True, null=True)
     settings = models.TextField(blank=True, null=True)
     total_items = models.IntegerField(blank=True, null=True)
@@ -335,9 +336,9 @@ class Import(models.Model):
 
 
 class IssueCategory(models.Model):
-    project = models.ForeignKey("Project")
+    project = models.ForeignKey("Project", on_delete=models.RESTRICT)
     name = models.CharField(max_length=60)
-    assigned_to = models.ForeignKey("User", blank=True, null=True)
+    assigned_to = models.ForeignKey("User", blank=True, null=True, on_delete=models.RESTRICT)
 
     class Meta:
         managed = redmine_models_managed
@@ -345,8 +346,10 @@ class IssueCategory(models.Model):
 
 
 class IssueRelation(models.Model):
-    issue_from = models.ForeignKey("Issue", related_name="related_to")
-    issue_to = models.ForeignKey("Issue", related_name="related_from")
+    issue_from = models.ForeignKey("Issue", related_name="related_to",
+            on_delete=models.RESTRICT)
+    issue_to = models.ForeignKey("Issue", related_name="related_from",
+            on_delete=models.RESTRICT)
     relation_type = models.CharField(max_length=1024)
     delay = models.IntegerField(blank=True, null=True)
 
@@ -368,22 +371,25 @@ class IssueStatus(models.Model):
 
 
 class Issue(models.Model):
-    tracker = models.ForeignKey("Tracker")
-    project = models.ForeignKey("Project")
+    tracker = models.ForeignKey("Tracker", on_delete=models.RESTRICT)
+    project = models.ForeignKey("Project", on_delete=models.RESTRICT)
     subject = models.CharField(max_length=1024)
     description = models.TextField(blank=True, null=True)
     due_date = models.DateField(blank=True, null=True)
-    category = models.ForeignKey("IssueCategory", blank=True, null=True)
-    status = models.ForeignKey("IssueStatus")
+    category = models.ForeignKey("IssueCategory", blank=True, null=True,
+            on_delete=models.RESTRICT)
+    status = models.ForeignKey("IssueStatus", on_delete=models.RESTRICT)
     assigned_to = models.ForeignKey(
         "User",
         related_name="assigned_issues",
         blank=True,
         null=True,
+        on_delete=models.RESTRICT,
     )
-    priority = models.ForeignKey("Enumeration")
-    fixed_version = models.ForeignKey("Version", blank=True, null=True)
-    author = models.ForeignKey("User")
+    priority = models.ForeignKey("Enumeration", on_delete=models.RESTRICT)
+    fixed_version = models.ForeignKey("Version", blank=True, null=True,
+            on_delete=models.RESTRICT)
+    author = models.ForeignKey("User", on_delete=models.RESTRICT)
     lock_version = models.IntegerField()
     created_on = models.DateTimeField(blank=True, null=True)
     updated_on = models.DateTimeField(blank=True, null=True)
@@ -395,8 +401,9 @@ class Issue(models.Model):
         related_name="children",
         blank=True,
         null=True,
+        on_delete=models.RESTRICT,
     )
-    root = models.ForeignKey("Issue", blank=True, null=True)
+    root = models.ForeignKey("Issue", blank=True, null=True, on_delete=models.RESTRICT)
     lft = models.ForeignKey(
         "Issue",
         db_column="lft",
@@ -420,7 +427,7 @@ class Issue(models.Model):
 
 
 class JournalDetail(models.Model):
-    journal = models.ForeignKey("Journal")
+    journal = models.ForeignKey("Journal", on_delete=models.RESTRICT)
     property = models.CharField(max_length=30)
     prop_key = models.CharField(max_length=30)
     old_value = models.TextField(blank=True, null=True)
@@ -434,7 +441,7 @@ class JournalDetail(models.Model):
 class Journal(models.Model):
     journalized_id = models.IntegerField()
     journalized_type = models.CharField(max_length=30)
-    user = models.ForeignKey("User")
+    user = models.ForeignKey("User", on_delete=models.RESTRICT)
     notes = models.TextField(blank=True, null=True)
     created_on = models.DateTimeField()
     private_notes = models.BooleanField()
@@ -445,8 +452,8 @@ class Journal(models.Model):
 
 
 class MemberRole(models.Model):
-    member = models.ForeignKey("Member")
-    role = models.ForeignKey("Role")
+    member = models.ForeignKey("Member", on_delete=models.RESTRICT)
+    role = models.ForeignKey("Role", on_delete=models.RESTRICT)
     inherited_from = models.IntegerField(blank=True, null=True)
 
     class Meta:
@@ -455,8 +462,8 @@ class MemberRole(models.Model):
 
 
 class Member(models.Model):
-    user = models.ForeignKey("User")
-    project = models.ForeignKey("Project")
+    user = models.ForeignKey("User", on_delete=models.RESTRICT)
+    project = models.ForeignKey("Project", on_delete=models.RESTRICT)
     created_on = models.DateTimeField(blank=True, null=True)
     mail_notification = models.BooleanField()
 
@@ -467,21 +474,22 @@ class Member(models.Model):
 
 
 class Message(models.Model):
-    board = models.ForeignKey(Board)
-    parent = models.ForeignKey("Message", blank=True, null=True)
+    board = models.ForeignKey(Board, on_delete=models.RESTRICT)
+    parent = models.ForeignKey("Message", blank=True, null=True, on_delete=models.RESTRICT)
     subject = models.CharField(max_length=1024)
     content = models.TextField(blank=True, null=True)
-    author = models.ForeignKey("User", blank=True, null=True)
+    author = models.ForeignKey("User", blank=True, null=True, on_delete=models.RESTRICT)
     replies_count = models.IntegerField()
     last_reply = models.ForeignKey(
         "Message",
         related_name="last_reply_to",
         blank=True,
         null=True,
+        on_delete=models.RESTRICT,
     )
     created_on = models.DateTimeField()
     updated_on = models.DateTimeField()
-    locked = models.NullBooleanField()
+    locked = models.BooleanField(null=True, blank=True)
     sticky = models.IntegerField(blank=True, null=True)
 
     class Meta:
@@ -490,11 +498,11 @@ class Message(models.Model):
 
 
 class News(models.Model):
-    project = models.ForeignKey("Project", blank=True, null=True)
+    project = models.ForeignKey("Project", blank=True, null=True, on_delete=models.RESTRICT)
     title = models.CharField(max_length=60)
     summary = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    author = models.ForeignKey("User")
+    author = models.ForeignKey("User", on_delete=models.RESTRICT)
     created_on = models.DateTimeField(blank=True, null=True)
     comments_count = models.IntegerField()
 
@@ -531,7 +539,12 @@ class Project(models.Model):
     description = models.TextField(blank=True, null=True)
     homepage = models.CharField(max_length=1024, blank=True, null=True)
     is_public = models.BooleanField()
-    parent = models.ForeignKey("Project", blank=True, null=True)
+    parent = models.ForeignKey("Project",
+        related_name="children",
+        blank=True,
+        null=True,
+        on_delete=models.RESTRICT,
+    )
     created_on = models.DateTimeField(blank=True, null=True)
     updated_on = models.DateTimeField(blank=True, null=True)
     identifier = models.CharField(max_length=1024, blank=True, null=True)
@@ -556,6 +569,7 @@ class Project(models.Model):
         related_name="projects_with_this_default_version",
         blank=True,
         null=True,
+        on_delete=models.RESTRICT,
     )
 
     class Meta:
@@ -564,8 +578,8 @@ class Project(models.Model):
 
 
 class ProjectTracker(models.Model):
-    project = models.ForeignKey("Project")
-    tracker = models.ForeignKey("Tracker")
+    project = models.ForeignKey("Project", on_delete=models.RESTRICT)
+    tracker = models.ForeignKey("Tracker", on_delete=models.RESTRICT)
 
     class Meta:
         managed = redmine_models_managed
@@ -574,10 +588,10 @@ class ProjectTracker(models.Model):
 
 
 class Query(models.Model):
-    project = models.ForeignKey(Project, blank=True, null=True)
+    project = models.ForeignKey(Project, blank=True, null=True, on_delete=models.RESTRICT)
     name = models.CharField(max_length=1024)
     filters = models.TextField(blank=True, null=True)
-    user = models.ForeignKey("User")
+    user = models.ForeignKey("User", on_delete=models.RESTRICT)
     column_names = models.TextField(blank=True, null=True)
     sort_criteria = models.TextField(blank=True, null=True)
     group_by = models.CharField(max_length=1024, blank=True, null=True)
@@ -591,8 +605,8 @@ class Query(models.Model):
 
 
 class QueryRole(models.Model):
-    query = models.ForeignKey(Query)
-    role = models.ForeignKey("Role")
+    query = models.ForeignKey(Query, on_delete=models.RESTRICT)
+    role = models.ForeignKey("Role", on_delete=models.RESTRICT)
 
     class Meta:
         managed = redmine_models_managed
@@ -601,7 +615,7 @@ class QueryRole(models.Model):
 
 
 class Repository(models.Model):
-    project = models.ForeignKey(Project)
+    project = models.ForeignKey(Project, on_delete=models.RESTRICT)
     url = models.CharField(max_length=1024)
     login = models.CharField(max_length=60, blank=True, null=True)
     password = models.CharField(max_length=1024, blank=True, null=True)
@@ -611,7 +625,7 @@ class Repository(models.Model):
     log_encoding = models.CharField(max_length=64, blank=True, null=True)
     extra_info = models.TextField(blank=True, null=True)
     identifier = models.CharField(max_length=1024, blank=True, null=True)
-    is_default = models.NullBooleanField()
+    is_default = models.BooleanField(null=True, blank=True)
     created_on = models.DateTimeField(blank=True, null=True)
 
     class Meta:
@@ -622,7 +636,7 @@ class Repository(models.Model):
 class Role(models.Model):
     name = models.CharField(max_length=30)
     position = models.IntegerField(blank=True, null=True)
-    assignable = models.NullBooleanField()
+    assignable = models.BooleanField(null=True, blank=True)
     builtin = models.IntegerField()
     permissions = models.TextField(blank=True, null=True)
     issues_visibility = models.CharField(max_length=30)
@@ -636,8 +650,9 @@ class Role(models.Model):
 
 
 class RoleManagedRole(models.Model):
-    role = models.ForeignKey(Role)
-    managed_role = models.ForeignKey(Role, related_name="managed_by")
+    role = models.ForeignKey(Role, on_delete=models.RESTRICT)
+    managed_role = models.ForeignKey(Role, related_name="managed_by",
+            on_delete=models.RESTRICT)
 
     class Meta:
         managed = redmine_models_managed
@@ -664,12 +679,12 @@ class Setting(models.Model):
 
 
 class TimeEntry(models.Model):
-    project = models.ForeignKey(Project)
-    user = models.ForeignKey("User")
-    issue = models.ForeignKey(Issue, blank=True, null=True)
+    project = models.ForeignKey(Project, on_delete=models.RESTRICT)
+    user = models.ForeignKey("User", on_delete=models.RESTRICT)
+    issue = models.ForeignKey(Issue, blank=True, null=True, on_delete=models.RESTRICT)
     hours = models.FloatField()
     comments = models.CharField(max_length=1024, blank=True, null=True)
-    activity = models.ForeignKey(Enumeration)
+    activity = models.ForeignKey(Enumeration, on_delete=models.RESTRICT)
     spent_on = models.DateField()
     tyear = models.IntegerField()
     tmonth = models.IntegerField()
@@ -683,7 +698,7 @@ class TimeEntry(models.Model):
 
 
 class Token(models.Model):
-    user = models.ForeignKey("User")
+    user = models.ForeignKey("User", on_delete=models.RESTRICT)
     action = models.CharField(max_length=30)
     value = models.CharField(unique=True, max_length=40)
     created_on = models.DateTimeField()
@@ -700,7 +715,8 @@ class Tracker(models.Model):
     position = models.IntegerField(blank=True, null=True)
     is_in_roadmap = models.BooleanField()
     fields_bits = models.IntegerField(blank=True, null=True)
-    default_status = models.ForeignKey(IssueStatus, blank=True, null=True)
+    default_status = models.ForeignKey(IssueStatus, blank=True, null=True,
+            on_delete=models.RESTRICT)
 
     class Meta:
         managed = redmine_models_managed
@@ -708,9 +724,9 @@ class Tracker(models.Model):
 
 
 class UserPreference(models.Model):
-    user = models.ForeignKey("User")
+    user = models.ForeignKey("User", on_delete=models.RESTRICT)
     others = models.TextField(blank=True, null=True)
-    hide_mail = models.NullBooleanField()
+    hide_mail = models.BooleanField(null=True, blank=True)
     time_zone = models.CharField(max_length=1024, blank=True, null=True)
 
     class Meta:
@@ -727,7 +743,8 @@ class User(models.Model):
     status = models.IntegerField()
     last_login_on = models.DateTimeField(blank=True, null=True)
     language = models.CharField(max_length=5, blank=True, null=True)
-    auth_source = models.ForeignKey(AuthSource, blank=True, null=True)
+    auth_source = models.ForeignKey(AuthSource, blank=True, null=True,
+            on_delete=models.RESTRICT)
     created_on = models.DateTimeField(blank=True, null=True)
     updated_on = models.DateTimeField(blank=True, null=True)
     type = models.CharField(max_length=1024, blank=True, null=True)
@@ -743,7 +760,7 @@ class User(models.Model):
 
 
 class Version(models.Model):
-    project = models.ForeignKey(Project)
+    project = models.ForeignKey(Project, on_delete=models.RESTRICT)
     name = models.CharField(max_length=1024)
     description = models.CharField(max_length=1024, blank=True, null=True)
     effective_date = models.DateField(blank=True, null=True)
@@ -761,7 +778,7 @@ class Version(models.Model):
 class Watcher(models.Model):
     watchable_type = models.CharField(max_length=1024)
     watchable_id = models.IntegerField()
-    user = models.ForeignKey(User, blank=True, null=True)
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.RESTRICT)
 
     class Meta:
         managed = redmine_models_managed
@@ -769,9 +786,9 @@ class Watcher(models.Model):
 
 
 class WikiContentVersion(models.Model):
-    wiki_content = models.ForeignKey("WikiContent")
-    page = models.ForeignKey("WikiPage")
-    author = models.ForeignKey(User, blank=True, null=True)
+    wiki_content = models.ForeignKey("WikiContent", on_delete=models.RESTRICT)
+    page = models.ForeignKey("WikiPage", on_delete=models.RESTRICT)
+    author = models.ForeignKey(User, blank=True, null=True, on_delete=models.RESTRICT)
     data = models.BinaryField(blank=True, null=True)
     compression = models.CharField(max_length=6, blank=True, null=True)
     comments = models.CharField(max_length=1024, blank=True, null=True)
@@ -784,8 +801,8 @@ class WikiContentVersion(models.Model):
 
 
 class WikiContent(models.Model):
-    page = models.ForeignKey("WikiPage")
-    author = models.ForeignKey(User, blank=True, null=True)
+    page = models.ForeignKey("WikiPage", on_delete=models.RESTRICT)
+    author = models.ForeignKey(User, blank=True, null=True, on_delete=models.RESTRICT)
     text = models.TextField(blank=True, null=True)
     comments = models.CharField(max_length=1024, blank=True, null=True)
     updated_on = models.DateTimeField()
@@ -797,11 +814,11 @@ class WikiContent(models.Model):
 
 
 class WikiPage(models.Model):
-    wiki = models.ForeignKey("Wiki")
+    wiki = models.ForeignKey("Wiki", on_delete=models.RESTRICT)
     title = models.CharField(max_length=255)
     created_on = models.DateTimeField()
     protected = models.BooleanField()
-    parent = models.ForeignKey("WikiPage", blank=True, null=True)
+    parent = models.ForeignKey("WikiPage", blank=True, null=True, on_delete=models.RESTRICT)
 
     class Meta:
         managed = redmine_models_managed
@@ -809,13 +826,14 @@ class WikiPage(models.Model):
 
 
 class WikiRedirect(models.Model):
-    wiki = models.ForeignKey("Wiki")
+    wiki = models.ForeignKey("Wiki", on_delete=models.RESTRICT)
     title = models.CharField(max_length=1024, blank=True, null=True)
     redirects_to = models.CharField(max_length=1024, blank=True, null=True)
     created_on = models.DateTimeField()
     redirects_to_wiki = models.ForeignKey(
         "Wiki",
         related_name="redirected_from",
+        on_delete=models.RESTRICT,
     )
 
     class Meta:
@@ -824,7 +842,7 @@ class WikiRedirect(models.Model):
 
 
 class Wiki(models.Model):
-    project = models.ForeignKey(Project)
+    project = models.ForeignKey(Project, on_delete=models.RESTRICT)
     start_page = models.CharField(max_length=255)
     status = models.IntegerField()
 
@@ -834,16 +852,18 @@ class Wiki(models.Model):
 
 
 class Workflow(models.Model):
-    tracker = models.ForeignKey(Tracker)
+    tracker = models.ForeignKey(Tracker, on_delete=models.RESTRICT)
     old_status = models.ForeignKey(
         IssueStatus,
         related_name="workflows_where_old",
+        on_delete=models.RESTRICT,
     )
     new_status = models.ForeignKey(
         IssueStatus,
         related_name="workflows_where_new",
+        on_delete=models.RESTRICT,
     )
-    role = models.ForeignKey(Role)
+    role = models.ForeignKey(Role, on_delete=models.RESTRICT)
     assignee = models.BooleanField()
     author = models.BooleanField()
     type = models.CharField(max_length=30, blank=True, null=True)
