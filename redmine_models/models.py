@@ -15,7 +15,7 @@ class Attachment(models.Model):
     disk_filename = models.CharField(max_length=1024)
     filesize = models.BigIntegerField()
     content_type = models.CharField(max_length=1024, blank=True, null=True)
-    digest = models.CharField(max_length=40)
+    digest = models.CharField(max_length=64)
     downloads = models.IntegerField()
     author = models.ForeignKey("User", on_delete=models.RESTRICT)
     created_on = models.DateTimeField(blank=True, null=True)
@@ -547,6 +547,11 @@ class Project(models.Model):
         null=True,
         on_delete=models.RESTRICT,
     )
+    default_assigned_to = models.ForeignKey("User",
+        on_delete=models.RESTRICT,
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         managed = redmine_models_managed
@@ -610,7 +615,7 @@ class Repository(models.Model):
 
 
 class Role(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=255)
     position = models.IntegerField(blank=True, null=True)
     assignable = models.BooleanField(null=True, blank=True)
     builtin = models.IntegerField()
@@ -619,6 +624,7 @@ class Role(models.Model):
     users_visibility = models.CharField(max_length=30)
     time_entries_visibility = models.CharField(max_length=30)
     all_roles_managed = models.BooleanField()
+    settings = models.TextField(blank=True, null=True)
 
     class Meta:
         managed = redmine_models_managed
@@ -656,6 +662,7 @@ class Setting(models.Model):
 
 class TimeEntry(models.Model):
     project = models.ForeignKey(Project, on_delete=models.RESTRICT)
+    author = models.ForeignKey("User", on_delete=models.RESTRICT, blank=True, null=True)
     user = models.ForeignKey("User", on_delete=models.RESTRICT)
     issue = models.ForeignKey(Issue, blank=True, null=True, on_delete=models.RESTRICT)
     hours = models.FloatField()
@@ -687,6 +694,7 @@ class Token(models.Model):
 
 class Tracker(models.Model):
     name = models.CharField(max_length=30)
+    description = models.TextField(blank=True, null=True)
     is_in_chlog = models.BooleanField()
     position = models.IntegerField(blank=True, null=True)
     is_in_roadmap = models.BooleanField()
